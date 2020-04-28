@@ -112,7 +112,7 @@ function writeFile(path, content, options={ encoding: 'utf8'}) {
   return new Promise((resolve, reject) => {
     fs.writeFile(path, content, options, (err) => {
       if (!err) {
-        resolve();
+        resolve(content);
       } else {
         reject(err);
       }
@@ -145,7 +145,7 @@ function writeStream(wstream, content, encoding='utf8') {
         reject(new Error('Write stream failed'));
       } else {
         wstream.end(data);
-        resolve();
+        resolve(content);
       }
     };
     let data = content;
@@ -160,6 +160,9 @@ function writeStream(wstream, content, encoding='utf8') {
  */
 function writeConsole(cons, content) {
   cons.log(content);
+  return new Promise((resolve) =>{
+    resolve(content)
+  });
 }
 
 /**
@@ -229,6 +232,9 @@ function check(source, rules, target) {
     })
     .then((output) => {
       return writer.call(this, target, output);
+    })
+    .then((output) => {
+      return output;
     })
     .catch((err) => {
       console.log(err);

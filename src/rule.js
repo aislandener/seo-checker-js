@@ -13,7 +13,7 @@ class Rule {
    * @param {?string} value attribute value, nullable if not specific, ignored if attribute not specific
    */
   constructor(tag='', attr=null, value=null) {
-    if (tag.length == 0 && !attr) {
+    if (tag.length === 0 && !attr) {
       tag = 'html';
     }
     this._tag = tag;
@@ -53,7 +53,7 @@ class Rule {
   /**
    * Expect number of elements which with given element
    * @param {string} tag tag name, can be empty but not null or undefined
-   * @param {?string} attr attribute name, nullable if not specific 
+   * @param {?string} attr attribute name, nullable if not specific
    * @param {?string} value attribute value, nullable if not specific, ignored if attribute not specific
    * @param {number} expect expected number of count
    * @returns {Rule} return self instance
@@ -69,6 +69,13 @@ class Rule {
     this.selector = `${this._left}${sign}${this._right}`;
     this.failed = `number of ${this._left} with ${this._right} expect=${expect} actual=`;
     this.expect = expect;
+
+    this.json = {}
+    if(tag) this.json.tag = tag;
+    if(attr) this.json.attr = attr;
+    if(value) this.json.value = value;
+    if(expect) this.json.expect = expect;
+
     return this;
   }
 
@@ -85,6 +92,12 @@ class Rule {
     this.selector = `${this._left}:not(${this._right})`;
     this.failed = `number of ${this._left} without ${this._right} expect=${expect} actual=`;
     this.expect = expect;
+
+    this.json = {}
+    if(this._tag) this.json.tag = this._tag;
+    if(attr) this.json.attr = attr;
+    if(value) this.json.value = value;
+    if(expect) this.json.expect = expect;
     return this;
   }
 
@@ -103,6 +116,12 @@ class Rule {
     this.selector = `${this._left}:has(${this._right})`;
     this.failed = `${this._left} does not have ${this._right}`;
     this.expect = true;
+
+    this.json = {}
+    if(tag) this.json.tag = tag;
+    if(attr) this.json.attr = attr;
+    if(value) this.json.value = value;
+
     return this;
   }
 
@@ -119,6 +138,12 @@ class Rule {
     this.selector = `${this._left}:has(${this._right})`;
     this.failed = `${this._left} has ${this._right}`;
     this.expect = false;
+
+    this.json = {}
+    if(tag) this.json.tag = tag;
+    if(attr) this.json.attr = attr;
+    if(value) this.json.value = value;
+
     return this;
   }
 
@@ -132,6 +157,12 @@ class Rule {
     this.selector = `${this._left}:gt(${count})`;
     this.failed = `number of ${this._left} greater than ${count}`;
     this.expect = false;
+
+    this.json = {}
+    if(this._tag) this.json.tag = this._tag;
+    if(this._attr) this.json.attr = this._attr;
+    if(this._value) this.json.value = this._value;
+    if(count) this.json.count = count;
     return this;
   }
 }

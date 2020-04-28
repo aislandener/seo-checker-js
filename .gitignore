@@ -3,6 +3,7 @@
 test/out*
 package-lock.json
 .vscode
+.idea
 
 # Logs
 logs
