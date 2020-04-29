@@ -9,7 +9,7 @@ class Rule {
    * Given element will be checked with rule functions,
    * or checked in entire HTML if no applied rule
    * @param {string} tag tag name, can be empty but not null or undefined
-   * @param {?string} attr attribute name, nullable if not specific 
+   * @param {?string} attr attribute name, nullable if not specific
    * @param {?string} value attribute value, nullable if not specific, ignored if attribute not specific
    */
   constructor(tag='', attr=null, value=null) {
@@ -28,7 +28,7 @@ class Rule {
   /**
    * Get selector string by given tag name, attribute name and attribute value
    * @param {string} tag tag name, can be empty but not null or undefined
-   * @param {?string} attr attribute name, nullable if not specific 
+   * @param {?string} attr attribute name, nullable if not specific
    * @param {?string} value attribute value, nullable if not specific, ignored if attribute not specific
    */
   _getSelector(tag='', attr=null, value=null) {
@@ -104,7 +104,7 @@ class Rule {
   /**
    * The element has given element
    * @param {string} tag tag name, can be empty but not null or undefined
-   * @param {?string} attr attribute name, nullable if not specific 
+   * @param {?string} attr attribute name, nullable if not specific
    * @param {?string} value attribute value, nullable if not specific, ignored if attribute not specific
    * @returns {Rule} return self instance
    */
@@ -128,7 +128,7 @@ class Rule {
   /**
    * The element does not have given element
    * @param {string} tag tag name, can be empty but not null or undefined
-   * @param {?string} attr attribute name, nullable if not specific 
+   * @param {?string} attr attribute name, nullable if not specific
    * @param {?string} value attribute value, nullable if not specific, ignored if attribute not specific
    * @returns {Rule} return self instance
    */

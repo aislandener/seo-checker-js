@@ -17,7 +17,7 @@ const rule_a_without_rel = new Rule('a').without('rel');
  */
 const rule_head_has_title_and_meta = [
   new Rule('head').included('title'),
-  new Rule('head').included('meta', 'name', 'descriptions'),
+  new Rule('head').included('meta', 'name', 'description'),
   new Rule('head').included('meta', 'name', 'keywords')
 ];
 /** <strong> more than 15 */
@@ -110,13 +110,13 @@ function loadStream(rstream, rules, encoding='utf8') {
  */
 function writeFile(path, content, options={ encoding: 'utf8'}) {
   return new Promise((resolve, reject) => {
-    fs.writeFile(path, content, options, (err) => {
+    fs.writeFile(path, content.text, options, (err) => {
       if (!err) {
         resolve(content);
       } else {
         reject(err);
       }
-    });  
+    });
   });
 }
 
@@ -148,7 +148,7 @@ function writeStream(wstream, content, encoding='utf8') {
         resolve(content);
       }
     };
-    let data = content;
+    let data = content.text;
     write(data);
   });
 }
@@ -159,9 +159,12 @@ function writeStream(wstream, content, encoding='utf8') {
  * @param {string} content output string
  */
 function writeConsole(cons, content) {
-  cons.log(content);
-  return new Promise((resolve) =>{
-    resolve(content)
+  cons.log(content.text);
+  return new Promise((resolve, reject) =>{
+    if(content)
+      resolve(content)
+    else
+      reject(content)
   });
 }
 
@@ -170,6 +173,8 @@ function writeConsole(cons, content) {
  * @param {Map} results parser results
  */
 function buildOutput(results) {
+  let out = {};
+  let jsonData = [];
   let output = '';
   results.forEach((value, key, map) => {
     //let description = value.description;
@@ -182,20 +187,33 @@ function buildOutput(results) {
     if (typeof expect === 'number') {
       actual = tags.length;
       output_actual = `${actual}`;
-    //  pre = 'count';
+      //  pre = 'count';
     } else if (typeof expect === 'boolean') {
       actual = (tags.length > 0);
-    //  pre = 'is';
+      //  pre = 'is';
     } else {
-      console.log(`Unexpect expect=${expect}`);
+      console.error(`Unexpect expect=${expect}`);
       return '';
     }
-    if (expect != actual) {
-      output += `${failed}${output_actual}\n`;
-      //output += `${description} ${pre} ${actual}\n`;
+
+    value.json.expect = expect;
+    value.json.actual = actual;
+    value.json.problem = typeof actual === "number" ? actual > expect : expect !== actual;
+    jsonData.push(value.json);
+    if(typeof actual === "number"){
+      if(actual > expect){
+        output += `${failed}${output_actual}\n`;
+      }
+    }else{
+      if (expect != actual) {
+        output += `${failed}${output_actual}\n`;
+        //output += `${description} ${pre} ${actual}\n`;
+      }
     }
   });
-  return output;
+  out.text = output
+  out.json = jsonData
+  return out;
 }
 
 /**
@@ -211,7 +229,7 @@ function check(source, rules, target) {
   } else if (source instanceof stream.Readable) {
     loader = this.loadStream;
   } else {
-    console.log('The source must be file path or readable stream');
+    console.error('The source must be file path or readable stream');
     return;
   }
   let writer = null;
@@ -222,24 +240,25 @@ function check(source, rules, target) {
   } else if (target instanceof console.Console) {
     writer = this.writeConsole;
   } else {
-    console.log('The target must be file path, writable stream or console');
+    console.error('The target must be file path, writable stream or console');
     return;
   }
   // maybe use async/await?
-  loader.call(this, source, rules)
-    .then((parser) => {
-      return this.buildOutput(parser.getResults());
-    })
-    .then((output) => {
-      return writer.call(this, target, output);
-    })
-    .then((output) => {
-      return output;
-    })
-    .catch((err) => {
-      console.log(err);
-      return;
-    });
+  return loader.call(this, source, rules)
+      .then((parser) => {
+        //console.log("parser" ,parser);
+        return this.buildOutput(parser.getResults());
+      })
+      .then((output) => {
+        return writer.call(this, target, output);
+      })
+      .then((output) => {
+        return output;
+      })
+      .catch((err) => {
+        console.error(err);
+        return;
+      });
 }
 
 module.exports = {

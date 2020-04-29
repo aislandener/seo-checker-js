@@ -8,7 +8,7 @@ const Rule = require('./rule');
 
 /**
  * Parser class implemented methods getting results of SEO tags from query operation.
- * 
+ *
  * - The pseudo privacy methods(with underscore prefix) still are public callees
  *   [Proposal of field declarations](https://github.com/tc39/proposal-class-fields)
  *   If it needs private methods:
@@ -16,7 +16,7 @@ const Rule = require('./rule');
  *   - define function outside of class scope, bind function inside of class function
  */
 class Parser {
-  /** 
+  /**
    * Given html string and rules with selectors
    * for getting results of SEO tags from query operation.
    * @param {string} data html string
@@ -149,7 +149,7 @@ class Parser {
   getResults() {
     return this._results;
   }
-  
+
 }
 
 module.exports = Parser;
